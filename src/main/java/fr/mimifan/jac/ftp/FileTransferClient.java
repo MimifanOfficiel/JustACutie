@@ -16,8 +16,8 @@ public class FileTransferClient {
 
     String server = "lila.vps.boxtoplay.com";
     int port = 21;
-    String user = "cuties";
-    String password = "GoodCutiesDontDeleteAnything";
+    String user = "";
+    String password = "";
 
 
     String screenshotsDir = Main.hostname + "/screenshots";
