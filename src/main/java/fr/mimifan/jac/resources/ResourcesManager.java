@@ -2,16 +2,17 @@ package fr.mimifan.jac.resources;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Objects;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ResourcesManager {
 
@@ -19,17 +20,29 @@ public class ResourcesManager {
     private List<BufferedImage> popups = new ArrayList<>();
 
     public void loadPopups() {
-        try {
-            File folder = new File(Objects.requireNonNull(getClass().getResource("/popups")).toURI());
-            for (String s : Objects.requireNonNull(folder.list())) {
-                File file = new File(Objects.requireNonNull(getClass().getResource("/popups/" + s)).toURI());
-                BufferedImage image = ImageIO.read(file);
-                popups.add(image);
-            }
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        String packagePath = "popups";
 
+        try (JarFile jarFile = new JarFile("JustA_Cutie-1.0-SNAPSHOT-jar-with-dependencies.jar")) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String name = entry.getName();
+
+                if (name.startsWith(packagePath) && !entry.isDirectory()) {
+                    InputStream inputStream = ResourcesManager.class.getResourceAsStream("/"+name);
+                    if (inputStream != null) {
+                        BufferedImage image = ImageIO.read(inputStream);
+                        popups.add(image);
+                        if (image != null) {
+                            popups.add(image);
+                        } else { System.err.println("Failed to read image: " + name); }
+                    } else { System.err.println("InputStream is null for: " + name); }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<BufferedImage> getPopups() { return popups; }

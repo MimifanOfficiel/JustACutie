@@ -12,6 +12,7 @@ public class Popup {
         JLabel imageLabel = new JLabel(imageIcon);
 
         JFrame frame = new JFrame("Cutie<3");
+        frame.setIconImage(image);
         frame.setUndecorated(true); // Set undecorated before making it visible
         frame.getContentPane().add(imageLabel);
         frame.pack();
@@ -28,14 +29,12 @@ public class Popup {
         TimerTask fadeInTask = new TimerTask() {
             float opacity = 0.0f;
             final float increment = 0.05f; // Increment for opacity change
-
+            //Miss Rubes owns my pc
             @Override
             public void run() {
                 if (opacity < 1.0f) {
                     opacity += increment;
-                    if (opacity > 1.0f) {
-                        opacity = 1.0f; // Ensure opacity stays within valid range
-                    }
+                    if (opacity > 1.0f) {opacity = 1.0f;}
                     frame.setOpacity(opacity);
                 } else {
                     timer.cancel();

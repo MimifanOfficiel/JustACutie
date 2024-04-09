@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class PopupsManager {
 
     private static final PopupsManager instance = new PopupsManager();
-    private int nextInterval = 1;
+    private int nextInterval = 0;
 
 
     public void load(){
