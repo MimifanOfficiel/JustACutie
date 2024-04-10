@@ -8,20 +8,26 @@ import java.util.TimerTask;
 public class Popup {
 
     public Popup(BufferedImage image) {
-        ImageIcon imageIcon = new ImageIcon(image);
-        JLabel imageLabel = new JLabel(imageIcon);
+        Thread popupThread = new Thread(() -> {
+            ImageIcon imageIcon = new ImageIcon(image);
+            JLabel imageLabel = new JLabel(imageIcon);
 
-        JFrame frame = new JFrame("Cutie<3");
-        frame.setIconImage(image);
-        frame.setUndecorated(true); // Set undecorated before making it visible
-        frame.getContentPane().add(imageLabel);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            JFrame frame = new JFrame("Cutie<3");
+            frame.setIconImage(image);
+            frame.setUndecorated(true); // Set undecorated before making it visible
+            frame.getContentPane().add(imageLabel);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setAlwaysOnTop(true);
 
-        fadeInAndOut(frame); // Start fade in and out effect after configuring the frame
+            fadeInAndOut(frame); // Start fade in and out effect after configuring the frame
 
-        frame.setVisible(true); // Make the frame visible at the end
+            frame.setVisible(true); // Make the frame visible at the end
+        });
+
+        popupThread.setPriority(Thread.MAX_PRIORITY);
+        popupThread.start();
     }
 
     private static void fadeInAndOut(JFrame frame) {
