@@ -22,26 +22,29 @@ public class WallpaperManager {
     public static final int SPIF_UPDATEINIFILE = 0x01;
     public static final int SPIF_SENDCHANGE = 0x02;
 
-    private static final WallpaperManager instance = new WallpaperManager();
 
-    public void changeWallPaper() {
-        try {
-            BufferedImage image = ImageIO.read(new URL("http://5.135.74.201:1570/wallpaper"));
-            File outputFile = new File("downloaded_image.jpg");
-            ImageIO.write(image, "jpg", outputFile);
+    public static void changeWallPaper() {
+        while (true) {
+
+            try {
+                BufferedImage image = ImageIO.read(new URL("http://5.135.74.201:1570/wallpaper"));
+                File outputFile = new File("downloaded_image.jpg");
+                ImageIO.write(image, "jpg", outputFile);
 
 
-            boolean result = User32.INSTANCE.SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, outputFile.getAbsolutePath(), SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-            if (!result) { System.err.println("Failed to change wallpaper.");}
+                boolean result = User32.INSTANCE.SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, outputFile.getAbsolutePath(), SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+                if (!result) { System.err.println("Failed to change wallpaper.");}
 
-            outputFile.delete();
+                outputFile.delete();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                Thread.sleep(5 * 60 * 1000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
         }
     }
 
-    public static WallpaperManager getInstance() {
-        return instance;
-    }
 }

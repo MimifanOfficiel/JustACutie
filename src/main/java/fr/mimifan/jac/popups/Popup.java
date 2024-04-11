@@ -34,7 +34,7 @@ public class Popup {
         Timer timer = new Timer();
         TimerTask fadeInTask = new TimerTask() {
             float opacity = 0.0f;
-            final float increment = 0.05f; // Increment for opacity change
+            final float increment = 0.1f, decrement = 0.025f; // Increment for opacity change
             //Miss Rubes owns my pc
             @Override
             public void run() {
@@ -51,13 +51,14 @@ public class Popup {
                         @Override
                         public void run() {
                             if (opacity > 0.0f) {
-                                opacity -= increment;
+                                opacity -= decrement;
                                 if (opacity < 0.0f) {
                                     opacity = 0.0f; // Ensure opacity stays within valid range
                                 }
                                 frame.setOpacity(opacity);
                             } else {
                                 fadeOutTimer.cancel(); // Cancel the fade-out Timer
+                                frame.setAlwaysOnTop(false);
                                 frame.dispose(); // Dispose the frame when fade-out is complete
                             }
                         }
