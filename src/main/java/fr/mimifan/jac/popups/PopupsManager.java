@@ -20,6 +20,7 @@ public class PopupsManager {
             @Override
             public void run() {
                 nextInterval = random.nextInt(possibleTimes.length);
+                System.out.println("Next popup in " + nextInterval + " minutes <3");
                 int index = random.nextInt(ResourcesManager.getInstance().getPopups().size()-1);
                 new Popup(ResourcesManager.getInstance().getPopups().get(index));
             }
