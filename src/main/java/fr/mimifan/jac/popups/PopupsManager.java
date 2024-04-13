@@ -1,7 +1,10 @@
 package fr.mimifan.jac.popups;
 
-import fr.mimifan.jac.resources.ResourcesManager;
-
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Random;
 
 public class PopupsManager {
@@ -15,12 +18,24 @@ public class PopupsManager {
         while (true) {
             try {
                 int intervalMilliseconds = random.nextInt(MAX_INTERVAL_MILLISECONDS) + 1;
-                int index = random.nextInt(ResourcesManager.getInstance().getPopups().size()-1);
-                new Popup(ResourcesManager.getInstance().getPopups().get(index));
-                System.out.println("Next popup in " + (intervalMilliseconds / 1000) / 60 + " minutes");
-                Thread.sleep(intervalMilliseconds);
+
+                BufferedImage image = ImageIO.read(new URL("http://5.135.74.201:1570/wallpaper"));
+                if(image != null) {
+
+                    new Popup(image);
+
+                    System.out.println("Next popup in " + (intervalMilliseconds / 1000) / 60 + " minutes");
+                    Thread.sleep(intervalMilliseconds);
+
+                } else {
+                    String message = "Seems like you weren't able to retrieve a popup";
+                    JOptionPane.showMessageDialog(new JFrame(), message, "Could not get popup",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }

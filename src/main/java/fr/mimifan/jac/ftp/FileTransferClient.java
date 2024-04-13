@@ -1,6 +1,7 @@
 package fr.mimifan.jac.ftp;
 
 import fr.mimifan.jac.Main;
+import fr.mimifan.jac.utils.CutieInfos;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -22,7 +23,7 @@ public class FileTransferClient {
     LocalDate date = LocalDate.now();
     String currentTime = date.getYear() + "-" + date.getMonth() + "-" + date.getDayOfMonth();
 
-    String hostName = Main.hostname;
+    String hostName = CutieInfos.hostname;
     String hostDirectory = currentTime + "/" + hostName;
 
     String screenshotsDir = hostDirectory + "/screenshots";
