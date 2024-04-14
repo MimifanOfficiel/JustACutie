@@ -3,6 +3,7 @@ package fr.mimifan.jac.screens;
 import fr.mimifan.jac.ftp.FileTransferClient;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -22,7 +23,11 @@ public class ScreenShotter {
             ImageIO.write(Image, "png", infoScreen);
             FileInputStream inputStream = new FileInputStream(infoScreen);
             FileTransferClient.getInstance().sendFile(FileTransferClient.getInstance().getScreenshotsDir() + "/" + path, inputStream);
-            infoScreen.delete();
+            if(!infoScreen.delete()) {
+                String message = "Whoopsie, sorry I couldn't delete " + infoScreen.getAbsolutePath();
+                JOptionPane.showMessageDialog(new JFrame(), message, "Could not delete file",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         } catch (AWTException e) {
             e.printStackTrace();
         } catch (IOException e) {
